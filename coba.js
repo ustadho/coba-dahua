@@ -31,6 +31,14 @@ dahua.on("alarm", function (code, action, index) {
   if (code === "VideoLoss" && action === "Stop") console.log("Video Found!");
   if (code === "VideoBlind" && action === "Start") console.log("Video Blind!");
   if (code === "VideoBlind" && action === "Stop") console.log("Video Unblind!");
+  if (code === "HeatImagingTemper" && action === "Start")
+    console.log("HeatImagingTemper!");
+  if (code === "HeatImagingTemper" && action === "Stop")
+    console.log("HeatImagingTemper!");
+  if (code === "FaceDetection" && action === "Start")
+    console.log("FaceDetection start!");
+  if (code === "FaceDetection" && action === "Stop")
+    console.log("FaceDetection stop!");
 });
 
 // Find Files
