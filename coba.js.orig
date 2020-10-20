@@ -11,7 +11,11 @@ var options = {
   port: "80",
   user: "admin",
   pass: "admin123",
+<<<<<<< HEAD
+  log: false,
+=======
   log: true,
+>>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
 };
 
 var dahua = new ipcamera.dahua(options);
@@ -22,6 +26,11 @@ var dahua = new ipcamera.dahua(options);
 
 // PTZ Go to preset 10
 // dahua.ptzPreset(10);
+<<<<<<< HEAD
+=======
+dahua.getUserInfoAll();
+dahua.getLog("2020-07-01 00:00:00", "2020-12-31 24:00:00");
+>>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
 
 // Monitor Camera Alarms
 // dahua.getUserInfoAll();
@@ -67,16 +76,21 @@ dahua.on("alarm", function (code, action, index) {
 // Find Files
 var query = {
   channel: "0",
+<<<<<<< HEAD
   startTime: "2020-10-01 09:00:00",
   endTime: "2020-10-29 12:00:00",
+=======
+  startTime: "2020-01-18 09:00:00",
+  endTime: "2020-11-9 12:00:00",
+>>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
   types: ["jpg", "dav"], // [ “dav”, “jpg”, “mp4” ]
   count: 10, // max. 100
 };
 
-dahua.findFiles(query);
-dahua.on("filesFound", function (data) {
-  console.log("filesFound:", data);
-});
+// dahua.findFiles(query);
+// dahua.on("filesFound", function (data) {
+//   console.log("filesFound:", data);
+// });
 
 dahua.on("face-recognition", function (data) {
   console.log("Recognition :", data);
@@ -101,7 +115,12 @@ var fileMeta = {
 // dahua.on("getSnapshot", function (msg) {
 //   console.log(msg);
 // });
+<<<<<<< HEAD
 dahua.on("ptzStatus", function (msg) {
   console.log(msg);
 });
 
+console.log("Listening at port 5488");
+app.listen(5488, 'localhost');
+=======
+>>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
