@@ -64,7 +64,6 @@ dahua.prototype.connect = function (options) {
     if (TRACE)
       console.log("TCP_KEEPCNT:", NetKeepAlive.getKeepAliveProbes(socket));
   });
-<<<<<<< HEAD
 
   client.on("response", function () {
     handleDahuaEventConnection(self, options);
@@ -74,17 +73,6 @@ dahua.prototype.connect = function (options) {
     handleDahuaEventError(self, err);
   });
 
-=======
-
-  client.on("response", function () {
-    handleDahuaEventConnection(self, options);
-  });
-
-  client.on("error", function (err) {
-    handleDahuaEventError(self, err);
-  });
-
->>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
   client.on("data", function (data) {
     handleDahuaEventData(self, data);
   });
@@ -315,7 +303,6 @@ dahua.prototype.findFiles = function (query) {
     self.emit("error", "FILE FIND MISSING ARGUMENTS");
     return 0;
   }
-<<<<<<< HEAD
 
   // create a finder
   this.createFileFind();
@@ -338,30 +325,6 @@ dahua.prototype.findFiles = function (query) {
     self.nextFileFind(objectId, query.count);
   });
 
-=======
-
-  // create a finder
-  this.createFileFind();
-
-  // start search
-  this.on("fileFinderCreated", function (objectId) {
-    if (TRACE) console.log("fileFinderId:", objectId);
-    self.startFileFind(
-      objectId,
-      query.channel,
-      query.startTime,
-      query.endTime,
-      query.types
-    );
-  });
-
-  // fetch results
-  this.on("startFileFindDone", function (objectId, body) {
-    if (TRACE) console.log("startFileFindDone:", objectId, body);
-    self.nextFileFind(objectId, query.count);
-  });
-
->>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
   // handle the results
   this.on("nextFileFindDone", function (objectId, items) {
     if (TRACE) console.log("nextFileFindDone:", objectId);
@@ -401,7 +364,6 @@ dahua.prototype.createFileFind = function () {
       // stripping 'result=' and returning the object ID
       var oid = body.trim().substr(7);
       self.emit("fileFinderCreated", oid);
-<<<<<<< HEAD
     }
   ).auth(USER, PASS, false);
 };
@@ -416,22 +378,6 @@ dahua.prototype.getUserInfoAll = function () {
     if (error) {
       self.emit("error", "ERROR ON Get User Info All");
     }
-=======
-    }
-  ).auth(USER, PASS, false);
-};
-
-dahua.prototype.getUserInfoAll = function () {
-  var self = this;
-  request(BASEURI + "/cgi-bin/userManager.cgi?action=getUserInfoAll", function (
-    error,
-    response,
-    body
-  ) {
-    if (error) {
-      self.emit("error", "ERROR ON Get User Info All");
-    }
->>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
     console.log("getUserInfo.response", response.body);
     // stripping 'result=' and returning the object ID
     // var oid = body.trim().substr(7);
@@ -447,31 +393,9 @@ dahua.prototype.getLog = function (start, end) {
       if (error) {
         self.emit("error", "ERROR ON Get Log");
       }
-<<<<<<< HEAD
 
       const token = response.body.substring(response.body.indexOf("=") + 1);
       console.log("getLog.response.TOKEN", token);
-
-      request(
-        `${BASEURI}/cgi-bin/log.cgi?action=doFind&token=${token}&count=50`,
-        function (error, response, body) {
-          if (error) {
-            self.emit("error", "ERROR ON Get Log.doFind");
-          }
-          console.log("getLog.doFind.response", response.body);
-          // stripping 'result=' and returning the object ID
-          // var oid = body.trim().substr(7);
-          // self.emit("fileFinderCreated", oid);
-        }
-      ).auth(USER, PASS, false);
-    }
-  ).auth(USER, PASS, false);
-};
-=======
-
-      const token = response.body.substring(response.body.indexOf("=") + 1);
-      console.log("getLog.response.TOKEN", token);
->>>>>>> e7bec0ac403814d3e480dd9aa3d6de21b9bd2c7d
 
       request(
         `${BASEURI}/cgi-bin/log.cgi?action=doFind&token=${token}&count=50`,
@@ -492,32 +416,26 @@ dahua.prototype.getLog = function (start, end) {
 dahua.prototype.getAlarmAccessRecordInfo = function (start, end) {
   var self = this;
   var url = `${BASEURI}/cgi-bin/recordFinder.cgi?action=find&name=AccessControlAlarmRecord&StartTime=${start}&EndTime=${end}&UserID=2&count=500`;
-  request(
-    url,
-    function (error, response, body) {
-      console.log('CEK LOG ALARM :', response.body)
-      if (error) {
-        self.emit("error", "ERROR ON Get Log");
-      }
+  request(url, function (error, response, body) {
+    console.log("CEK LOG ALARM :", response.body);
+    if (error) {
+      self.emit("error", "ERROR ON Get Log");
     }
-  ).auth(USER, PASS, false);
+  }).auth(USER, PASS, false);
 };
 
 dahua.prototype.getAccessRecordByCard = function (start, end, UserID, count) {
   var self = this;
-  var start_time = Math.floor(new Date(start).getTime() / 1000)
-  var end_time = Math.floor(new Date(end).getTime() / 1000)
+  var start_time = Math.floor(new Date(start).getTime() / 1000);
+  var end_time = Math.floor(new Date(end).getTime() / 1000);
   var url = `${BASEURI}/cgi-bin/recordFinder.cgi?action=find&name=AccessControlCard&StartTime=${start_time}&EndTime=${end_time}&condition.UserID=${UserID}&count=${count}`;
-  console.log('CEK URL ACCES :', url)
-  request(
-    url,
-    function (error, response, body) {
-      console.log('CEK LOG By CARD :', response.body)
-      if (error) {
-        self.emit("error", "ERROR ON Get Log");
-      }
+  console.log("CEK URL ACCES :", url);
+  request(url, function (error, response, body) {
+    console.log("CEK LOG By CARD :", response.body);
+    if (error) {
+      self.emit("error", "ERROR ON Get Log");
     }
-  ).auth(USER, PASS, false);
+  }).auth(USER, PASS, false);
 };
 
 // 10.1.2 StartFind
