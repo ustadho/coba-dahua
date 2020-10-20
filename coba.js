@@ -2,20 +2,22 @@ var ipcamera = require("./dahua");
 
 // Options:
 var options = {
-  host: "192.168.1.100",
+  host: "192.168.10.113",
   port: "80",
   user: "admin",
-  pass: "password123",
-  log: false,
+  pass: "admin123",
+  log: true,
 };
 
 var dahua = new ipcamera.dahua(options);
 
 // Switch to Day Profile
-dahua.nightProfile();
+// dahua.nightProfile();
 
 // PTZ Go to preset 10
-dahua.ptzPreset(10);
+// dahua.ptzPreset(10);
+dahua.getUserInfoAll();
+dahua.getLog("2020-07-01 00:00:00", "2020-12-31 24:00:00");
 
 // Monitor Camera Alarms
 dahua.on("alarm", function (code, action, index) {
@@ -44,16 +46,16 @@ dahua.on("alarm", function (code, action, index) {
 // Find Files
 var query = {
   channel: "0",
-  startTime: "2018-5-9 09:00:00",
-  endTime: "2018-5-9 12:00:00",
+  startTime: "2020-01-18 09:00:00",
+  endTime: "2020-11-9 12:00:00",
   types: ["jpg", "dav"], // [ “dav”, “jpg”, “mp4” ]
   count: 10, // max. 100
 };
 
-dahua.findFiles(query);
-dahua.on("filesFound", function (data) {
-  console.log("filesFound:", data);
-});
+// dahua.findFiles(query);
+// dahua.on("filesFound", function (data) {
+//   console.log("filesFound:", data);
+// });
 
 // Save File
 var fileMeta = {
@@ -64,13 +66,13 @@ var fileMeta = {
   Type: "dav",
 };
 
-dahua.saveFile(fileMeta);
-dahua.on("saveFile", function (msg) {
-  console.log("File saved!");
-});
+// dahua.saveFile(fileMeta);
+// dahua.on("saveFile", function (msg) {
+//   console.log("File saved!");
+// });
 
 // Get a snapshot
-dahua.getSnapshot();
-dahua.on("getSnapshot", function (msg) {
-  console.log(msg);
-});
+// dahua.getSnapshot();
+// dahua.on("getSnapshot", function (msg) {
+//   console.log(msg);
+// });
