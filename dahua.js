@@ -47,7 +47,8 @@ dahua.prototype.connect = function (options) {
   var opts = {
     url:
       BASEURI +
-      "/cgi-bin/eventManager.cgi?action=attach&codes=[AlarmLocal,VideoMotion,VideoLoss,VideoBlind,FaceDetection,HeatImagingTemper]",
+      // "/cgi-bin/eventManager.cgi?action=attach&codes=[AlarmLocal,VideoMotion,VideoLoss,VideoBlind,FaceDetection,HeatImagingTemper]",
+      "/cgi-bin/snapManager.cgi?action=attachFileProc&Flags[0]=Event&Events=[AccessControl]&heartbeat=5",
     forever: true,
     headers: { Accept: "multipart/x-mixed-replace" },
   };
@@ -91,18 +92,52 @@ dahua.prototype.connect = function (options) {
 };
 
 function handleDahuaEventData(self, data) {
-  if (TRACE) console.log("Data: " + data.toString());
+  // if (TRACE) console.log("Data: " + data.toString());
   data = data.toString().split("\r\n");
   var i = Object.keys(data);
+  var cardNo = null;
+  var cardName = null;
+  var createTime = null;
+  var currentTemperature = null;
+  var type = null;
+
   i.forEach(function (id) {
-    if (data[id].startsWith("Code=")) {
-      var alarm = data[id].split(";");
-      var code = alarm[0].substr(5);
-      var action = alarm[1].substr(7);
-      var index = alarm[2].substr(6);
-      self.emit("alarm", code, action, index);
+    if (data[id].startsWith("Events[0].")) {
+      if (data[id].includes("CardNo")) {
+        cardNo = data[id].substring(data[id].indexOf("=") + 1);
+      }
+      if (data[id].includes("CardName")) {
+        cardName = data[id].substring(data[id].indexOf("=") + 1);
+      }
+      if (data[id].includes("CreateTime")) {
+        createTime = data[id].substring(data[id].indexOf("=") + 1);
+      }
+      if (data[id].includes("CurrentTemperature")) {
+        currentTemperature = data[id].substring(data[id].indexOf("=") + 1);
+      }
+      if (data[id].includes(".Type=")) {
+        type = data[id].substring(data[id].indexOf("=") + 1);
+      }
+      // self.emit("accessControl", code, action, index);
     }
   });
+  // setTimeout(() => {
+  if (
+    data !== null &&
+    typeof data !== "undefined" &&
+    data.toString().includes("Events[0].")
+  ) {
+    self.emit(
+      "accessControl",
+      cardNo,
+      cardName,
+      createTime,
+      currentTemperature,
+      type
+    );
+  }
+
+  // }, 200);
 }
 
 function handleDahuaEventConnection(self, options) {
@@ -432,6 +467,17 @@ dahua.prototype.getAccessRecordByCard = function (start, end, UserID, count) {
   console.log("CEK URL ACCES :", url);
   request(url, function (error, response, body) {
     console.log("CEK LOG By CARD :", response.body);
+    if (error) {
+      self.emit("error", "ERROR ON Get Log");
+    }
+  }).auth(USER, PASS, false);
+};
+
+dahua.prototype.getAccessControl = function (start, end) {
+  var self = this;
+  var url = `${BASEURI}/cgi-bin/snapManager.cgi?action=attachFileProc&Flags[0]=Event&Events=[AccessControl]&heartbeat=5`;
+  request(url, function (error, response, body) {
+    console.log("getAccessControl :", response.body);
     if (error) {
       self.emit("error", "ERROR ON Get Log");
     }

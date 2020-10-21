@@ -1,8 +1,8 @@
 var ipcamera = require("./dahua");
-var http = require('http');
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+var http = require("http");
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 const app = express();
 
 // Options:
@@ -27,17 +27,15 @@ var dahua = new ipcamera.dahua(options);
 // dahua.getUserInfoAll();
 // dahua.getLog("2020-07-01 00:00:00", "2020-12-31 24:00:00");
 
-dahua.getAlarmAccessRecordInfo("2020-07-01 00:00:00", "2020-12-31 24:00:00")
+// dahua.getAlarmAccessRecordInfo("2020-07-01 00:00:00", "2020-12-31 24:00:00")
 // dahua.getAccessRecordByCard("2020-07-01 00:00:00", "2020-12-31 24:00:00", "2", "500")
+dahua.getAccessControl();
 
 dahua.on("alarm", function (code, action, index) {
-  console.log('CEK ALARAM :', action)
-  console.log('CEK ALARAM code :', code)
-  console.log('CEK ALARAM index :', index)
   if (code === "VideoBlind" && action === "Start")
     console.log("Video Blind Detected");
-    if (code === "VideoBlind" && action === "Stop")
-      console.log("Video Blind Ended");
+  if (code === "VideoBlind" && action === "Stop")
+    console.log("Video Blind Ended");
   if (code === "VideoMotion" && action === "Start")
     console.log("Video Motion Detected");
   if (code === "VideoMotion" && action === "Stop")
@@ -58,10 +56,26 @@ dahua.on("alarm", function (code, action, index) {
     console.log("FaceDetection start!");
   if (code === "FaceDetection" && action === "Stop")
     console.log("FaceDetection stop!");
-    if (code === "TemperatureAlarm" && action === "Start")
-      console.log("TemperatureAlarm start!");
-    if (code === "TemperatureAlarm" && action === "Stop")
-      console.log("TemperatureAlarm stop!");
+  if (code === "TemperatureAlarm" && action === "Start")
+    console.log("TemperatureAlarm start!");
+  if (code === "TemperatureAlarm" && action === "Stop")
+    console.log("TemperatureAlarm stop!");
+});
+dahua.on("accessControl", function (
+  cardNo,
+  cardName,
+  createTime,
+  currentTemperature,
+  type
+) {
+  console.log("-----------------Access Control-------------------");
+  console.log("cardNo: " + cardNo);
+  console.log("cardName: " + cardName);
+  console.log("createTime: " + createTime);
+  console.log("currentTemperature: " + currentTemperature);
+  console.log("type: " + type);
+  console.log("-----------------Access Control-------------------");
+  console.log("\n");
 });
 
 // Find Files
@@ -86,7 +100,8 @@ dahua.on("face-recognition", function (data) {
 var fileMeta = {
   Channel: "0",
   EndTime: "2020-10-01 10:45:00",
-  FilePath: "/var/www/sd/2018-05-19/001/dav/10/10.36.45-10.45.00[R][0@0][0].dav",
+  FilePath:
+    "/var/www/sd/2018-05-19/001/dav/10/10.36.45-10.45.00[R][0@0][0].dav",
   StartTime: "2018-10-29 10:36:45",
   Type: "dav",
 };
@@ -98,10 +113,9 @@ var fileMeta = {
 
 // Get a snapshot
 // dahua.getSnapshot();
-// dahua.on("getSnapshot", function (msg) {
-//   console.log(msg);
-// });
+dahua.on("getSnapshot", function (msg) {
+  console.log("getSnapshot" + msg);
+});
 dahua.on("ptzStatus", function (msg) {
   console.log(msg);
 });
-
